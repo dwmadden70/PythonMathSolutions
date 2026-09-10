@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build all solutions",
+            "type": "process",
+            "command": "${command:python.interpreterPath}",
+            "args": ["${workspaceFolder}/build.py", "--all"],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Build selected solution",
+            "type": "process",
+            "command": "${command:python.interpreterPath}",
+            "args": ["${workspaceFolder}/build.py", "--solution", "${input:solutionName}"],
+            "group": "build",
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "solutionName",
+            "type": "promptString",
+            "description": "Solution folder name",
+            "default": "001-sum-of-multiples"
+        }
+    ]
+}

@@ -1,31 +1,50 @@
 # PythonMathSolutions
 
-A collection of Python solutions and explanations for mathematical problems, exercises, and algorithms.
+A collection of standalone Python solutions for mathematical problems, exercises, and algorithms.
 
-## Overview
+## Layout
 
-This repository is organized to make mathematical problem-solving approachable through clear Python implementations. Each solution aims to balance correctness, readability, and useful explanation.
+Each problem lives in its own folder under `solutions`:
 
-## Getting Started
-
-Clone the repository and open it in your preferred Python development environment:
-
-```bash
-git clone https://github.com/dwmadden70/PythonMathSolutions.git
-cd PythonMathSolutions
+```text
+solutions/
+	001-sum-of-multiples/
+		main.py
 ```
 
-Python 3.10 or newer is recommended.
+Use a zero-padded number and a short name for new folders. Keep the executable entry point in `main.py`; put problem-specific modules and tests beside it as the solution grows.
 
-## Usage
+## Run a solution
 
 Run a solution directly with Python:
 
 ```bash
-python path/to/solution.py
+python solutions/001-sum-of-multiples/main.py
 ```
 
-Refer to individual files for problem statements, implementation details, and examples.
+List all discovered solutions:
+
+```bash
+python build.py --list
+```
+
+## Build executables
+
+PyInstaller is used to create one-file executables in `dist/<solution-name>`:
+
+```bash
+python -m pip install -r requirements-build.txt
+
+# Build one solution
+python build.py --solution 001-sum-of-multiples
+
+# Build every solution
+python build.py --all
+```
+
+On Windows, the resulting executable is `dist/001-sum-of-multiples/001-sum-of-multiples.exe`. The equivalent VS Code tasks are available from **Terminal > Run Task**.
+
+Python 3.10 or newer is recommended.
 
 ## Contributing
 
