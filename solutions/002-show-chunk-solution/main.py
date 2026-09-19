@@ -1,12 +1,14 @@
-from typing import NamedTuple
+from typing import NamedTuple, Tuple
 
-# A dataclass stores the three values produced by the division in one object.
-# frozen=True makes the result read-only after it has been created.
+# This class is used to store the result of a division operation,
+# including the quotient, remainder, and chunks.
 class DivisionResult(NamedTuple):
     quotient: int
     remainder: int
     chunks: list[int]
 
+# This script implements the chunking strategy for division
+# It takes a dividend and divisor as input and returns the quotient, remainder, and chunks
 
 def chunked_division(dividend: int, divisor: int) -> DivisionResult:
     """Return the quotient, remainder, and chunks used for the division.
@@ -98,7 +100,8 @@ def display_solution(
         print(f"\nFinal Result: {result.quotient:,} (Perfect division, no remainder!)")
 
 
-def get_user_input():
+def get_user_input() -> Tuple[int, int]:
+    """Get user input for dividend and divisor."""
     try:
         dividend = int(input("Enter the dividend: "))
         divisor = int(input("Enter the divisor: "))
