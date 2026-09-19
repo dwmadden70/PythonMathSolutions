@@ -26,24 +26,27 @@ def chunked_division(dividend: int, divisor: int) -> ChunkedDivisionResult:
     if divisor <= 0:
         raise ValueError("Divisor must be greater than zero.")
 
-    current_remainder = dividend
+    if divisor == 0:
+        raise ValueError("Invalid input. Divisor must not be zero.")
+
+    remaining_dividend = dividend
     chunks: list[int] = []
 
     # Start with the largest power of ten that could produce a useful chunk.
-    multiplier_power = len(str(current_remainder)) - len(str(divisor))
+    multiplier_power = len(str(remaining_dividend)) - len(str(divisor))
     if multiplier_power < 0:
         multiplier_power = 0
 
     for power in range(multiplier_power, -1, -1):
         factor = 10 ** power
         # // is floor division: it tells us how many whole chunks fit.
-        count = current_remainder // (divisor * factor)
+        count = remaining_dividend // (divisor * factor)
 
         if count > 0:
             # Save the chunk and remove it from the amount still to divide.
             chunk_value = divisor * factor * count
             chunks.append(chunk_value)
-            current_remainder -= chunk_value
+            remaining_dividend -= chunk_value
 
     # divmod returns both results at once: (whole quotient, remainder).
     quotient, remainder = divmod(dividend, divisor)
@@ -64,15 +67,15 @@ def display_solution(
         divisor: The number used to divide the dividend.
         result: The quotient, remainder, and chunks from the division.
     """
-    print(f"Solving {dividend} ÷ {divisor} using the chunking strategy:\n")
+    print(f"Solving {dividend:,} ÷ {divisor:,} using the chunking strategy:\n")
 
-    current_remainder = dividend
+    remaining_dividend = dividend
     for chunk in result.chunks:
         quotient_piece = chunk // divisor
         # Subtract each chunk so the displayed leftover matches the process.
-        current_remainder -= chunk
+        remaining_dividend -= chunk
         print(f" -> Found chunk: {chunk:,} ({divisor} x {quotient_piece:,})")
-        print(f" Leftover remaining: {current_remainder:,}\n")
+        print(f" Leftover remaining: {remaining_dividend:,}\n")
 
     print("-" * 40)
     print("Combining the pieces:")
@@ -97,15 +100,23 @@ def display_solution(
         print(f"\nFinal Result: {result.quotient:,} (Perfect division, no remainder!)")
 
 
-def main() -> None:
+def get_user_input():
     try:
-        # input() returns text, so int() converts each answer into a number.
         dividend = int(input("Enter the dividend: "))
         divisor = int(input("Enter the divisor: "))
-        result = chunked_division(dividend, divisor)
-        display_solution(dividend, divisor, result)
+        return dividend, divisor
     except ValueError as error:
         print(f"Error: {error}")
+        return None, None
+
+
+def main() -> None:
+    dividend, divisor = get_user_input()
+    if dividend is None or divisor is None:
+        return
+
+    result = chunked_division(dividend, divisor)
+    display_solution(dividend, divisor, result)
 
 
 if __name__ == "__main__":
