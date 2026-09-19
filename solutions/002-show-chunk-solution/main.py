@@ -1,16 +1,15 @@
-from dataclasses import dataclass
+from typing import NamedTuple
 
 
 # A dataclass stores the three values produced by the division in one object.
 # frozen=True makes the result read-only after it has been created.
-@dataclass(frozen=True)
-class ChunkedDivisionResult:
+class DivisionResult(NamedTuple):
     quotient: int
     remainder: int
-    chunks: tuple[int, ...]
+    chunks: list[int]
 
 
-def chunked_division(dividend: int, divisor: int) -> ChunkedDivisionResult:
+def chunked_division(dividend: int, divisor: int) -> DivisionResult:
     """Return the quotient, remainder, and chunks used for the division.
 
     Args:
@@ -50,7 +49,7 @@ def chunked_division(dividend: int, divisor: int) -> ChunkedDivisionResult:
 
     # divmod returns both results at once: (whole quotient, remainder).
     quotient, remainder = divmod(dividend, divisor)
-    return ChunkedDivisionResult(
+    return DivisionResult(
         quotient=quotient,
         remainder=remainder,
         chunks=tuple(chunks),
@@ -58,7 +57,7 @@ def chunked_division(dividend: int, divisor: int) -> ChunkedDivisionResult:
 
 
 def display_solution(
-    dividend: int, divisor: int, result: ChunkedDivisionResult
+    dividend: int, divisor: int, result: DivisionResult
 ) -> None:
     """Print the chunking steps and final result for a completed division.
 
