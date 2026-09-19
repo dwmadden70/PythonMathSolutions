@@ -1,16 +1,13 @@
-from typing import NamedTuple, Tuple
+from typing import NamedTuple
 
-# This class is used to store the result of a division operation,
-# including the quotient, remainder, and chunks.
-class DivisionResult(NamedTuple):
+# NamedTuple provides an immutable, tuple-like result object with named fields.
+# Type hints document expected types but are not enforced at runtime.
+class ChunkedDivisionResult(NamedTuple):
     quotient: int
     remainder: int
-    chunks: list[int]
+    chunks: tuple[int, ...]
 
-# This script implements the chunking strategy for division
-# It takes a dividend and divisor as input and returns the quotient, remainder, and chunks
-
-def chunked_division(dividend: int, divisor: int) -> DivisionResult:
+def chunked_division(dividend: int, divisor: int) -> ChunkedDivisionResult:
     """Return the quotient, remainder, and chunks used for the division.
 
     Args:
@@ -20,14 +17,11 @@ def chunked_division(dividend: int, divisor: int) -> DivisionResult:
     Raises:
         ValueError: If the dividend is negative or the divisor is not positive.
     """
-    # Reject inputs that do not make sense for this division exercise.
+    # Validate explicitly because Python type hints do not enforce value constraints.
     if dividend < 0:
         raise ValueError("Dividend must be non-negative.")
     if divisor <= 0:
         raise ValueError("Divisor must be greater than zero.")
-
-    if divisor == 0:
-        raise ValueError("Invalid input. Divisor must not be zero.")
 
     remaining_dividend = dividend
     chunks: list[int] = []
@@ -37,9 +31,11 @@ def chunked_division(dividend: int, divisor: int) -> DivisionResult:
     if multiplier_power < 0:
         multiplier_power = 0
 
+    # range() stops before its end value, so -1 includes power 0 while counting down.
     for power in range(multiplier_power, -1, -1):
         factor = 10 ** power
-        # // is floor division: it tells us how many whole chunks fit.
+        # // performs floor division. With these non-negative inputs, it gives the
+        # same whole-number result as C# integer division.
         count = remaining_dividend // (divisor * factor)
 
         if count > 0:
@@ -50,7 +46,7 @@ def chunked_division(dividend: int, divisor: int) -> DivisionResult:
 
     # divmod returns both results at once: (whole quotient, remainder).
     quotient, remainder = divmod(dividend, divisor)
-    return DivisionResult(
+    return ChunkedDivisionResult(
         quotient=quotient,
         remainder=remainder,
         chunks=tuple(chunks),
@@ -58,7 +54,7 @@ def chunked_division(dividend: int, divisor: int) -> DivisionResult:
 
 
 def display_solution(
-    dividend: int, divisor: int, result: DivisionResult
+    dividend: int, divisor: int, result: ChunkedDivisionResult
 ) -> None:
     """Print the chunking steps and final result for a completed division.
 
@@ -100,9 +96,9 @@ def display_solution(
         print(f"\nFinal Result: {result.quotient:,} (Perfect division, no remainder!)")
 
 
-def get_user_input() -> Tuple[int, int]:
-    """Get user input for dividend and divisor."""
+def get_user_input() -> tuple[int | None, int | None]:
     try:
+        # input() always returns text; int() converts it and raises ValueError if invalid.
         dividend = int(input("Enter the dividend: "))
         divisor = int(input("Enter the divisor: "))
         return dividend, divisor
@@ -110,13 +106,17 @@ def get_user_input() -> Tuple[int, int]:
         print(f"Error: {error}")
         return None, None
 
-
+# This guard runs main() only when the file is executed directly, not imported.
 def main() -> None:
-    dividend, divisor = get_user_input()
-    if dividend is None or divisor is None:
+    try:
+        dividend, divisor = get_user_input()
+        if dividend is None or divisor is None:
+            return
+        result = chunked_division(dividend, divisor)
+    except ValueError as error:
+        print(f"Error: {error}")
         return
 
-    result = chunked_division(dividend, divisor)
     display_solution(dividend, divisor, result)
 
 
