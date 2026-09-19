@@ -1,6 +1,5 @@
 from typing import NamedTuple
 
-
 # A dataclass stores the three values produced by the division in one object.
 # frozen=True makes the result read-only after it has been created.
 class DivisionResult(NamedTuple):
